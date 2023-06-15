@@ -45,8 +45,7 @@ async function run() {
             try {
                 const email = req.params.email;
                 const query = { email: email };
-                const result = await tasksCollection.find(query).toArray();
-                result.reverse();
+                const result = await tasksCollection.find(query).sort({ addedTime: -1 }).toArray();
                 res.send(result);
             } catch (error) {
                 console.error(error);
@@ -54,9 +53,9 @@ async function run() {
             }
         });
 
-        app.patch('/task/update/:id', async(req, res) => {
+        app.patch('/task/update/:id', async (req, res) => {
             const id = req.params.id;
-            const filter = {_id: new ObjectId(id)};
+            const filter = { _id: new ObjectId(id) };
             const updateDoc = {
                 $set: {
                     status: 'Completed'
@@ -66,15 +65,14 @@ async function run() {
             res.send(result);
         })
 
-        app.put('/update/:id', async(req, res) => {
+        app.put('/update/:id', async (req, res) => {
             const id = req.params.id;
-            const filter = {_id: new ObjectId(id)};
+            const filter = { _id: new ObjectId(id) };
             const updateTask = req.body;
             const updateDoc = {
                 $set: {
                     title: updateTask.title,
                     description: updateTask.description,
-                    status: updateTask.status,
                 }
             };
             const result = await tasksCollection.updateOne(filter, updateDoc);
